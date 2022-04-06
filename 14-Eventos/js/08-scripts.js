@@ -1,3 +1,6 @@
+// Otra manera de evitar el event Bubbling
+// Este metodo sirve mucho cuando se genera html
+
 // Evitar la propagación con contenido creado...
 const parrafo1 = document.createElement('P');
 parrafo1.textContent = 'Concierto';
@@ -13,6 +16,10 @@ parrafo2.classList.add('titulo');
 const parrafo3 = document.createElement('p');
 parrafo3.textContent = '$800 por persona';
 parrafo3.classList.add('precio');
+// Se debe poner adentro de una función anonima ya que si no no se ejecuta el argumento
+parrafo3.onclick = () => {
+    mostrarFuncion(7)
+}
 
 // crear el div...
 const info = document.createElement('div');
@@ -38,3 +45,7 @@ contenedorCard.appendChild(info);
 // Insertarlo en el HTML...
 const contenedor = document.querySelector('.hacer .contenedor-cards');
 contenedor.appendChild(contenedorCard); // al inicio info
+
+function mostrarFuncion(id) {
+    console.log(`Le di click a la función ${id}`)
+}

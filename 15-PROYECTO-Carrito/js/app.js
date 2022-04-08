@@ -8,7 +8,18 @@ let arregloCarrito = [];
 
 losEventos();
 function losEventos() {
-    listaCursos.addEventListener('click', agregarCarrito)
+    listaCursos.addEventListener('click', agregarCarrito);
+
+    carrito.addEventListener('click', eliminarCurso);
+
+    vaciarCarrito.addEventListener('click', vaciarCarro)
+}
+
+function vaciarCarro() {
+    arregloCarrito = [];
+
+    // Limpiuar html para que desaparezca todo en el html
+    limparHTML();
 }
 
 function agregarCarrito(e) {
@@ -36,7 +47,32 @@ function leerCursos(e) {
         cantidad: 1
     }
 
-    arregloCarrito = [...arregloCarrito, infoCursos];
+    // esto es para que el programa detecete si un curso está agregado más de una vez
+    const existe = arregloCarrito.some((curso) => {
+        return curso.id === infoCursos.id
+    })
+
+  
+
+    if(existe) {
+        // Se actualiza el numero de cantidad
+        const cursos = arregloCarrito.map((curso) => {
+            if(curso.id === infoCursos.id) {
+                curso.cantidad++;
+                return curso
+            } else {
+                return curso
+            }
+        });
+
+        arregloCarrito = [...cursos]
+    } else {
+        // Se añade el curso
+        arregloCarrito = [...arregloCarrito, infoCursos];
+    }
+
+    console.log(arregloCarrito)
+
 
     carritoHTML();
 
@@ -54,7 +90,7 @@ function carritoHTML() {
 
         fila.innerHTML = `
             <td>
-                <img src="${producto.imagen}">
+                <img src="${producto.imagen}" width=100>
             </td>
             <td>
                 ${producto.titulo}
@@ -67,6 +103,10 @@ function carritoHTML() {
             <td>
                 ${producto.cantidad}
             </td>
+
+            <td>
+                <a href="#" class="borrar-curso" data-id="${producto.id}">X</>
+            </td>
         `;
 
         tbody.appendChild(fila)
@@ -77,4 +117,22 @@ function carritoHTML() {
 
 function limparHTML() {
     tbody.innerHTML = ''
+}
+
+// ELiminar curso
+function eliminarCurso(e) {
+    // Comprobaremos la clase para poder eliminar solo cuando clicke en el elemento 
+    // console.log(e.target.classList)
+
+    if(e.target.classList.contains('borrar-curso')) {
+        // necesitamos obtener la id del curso+
+        // console.log(e.target.getAttribute('data-id'))
+        const cursoId = e.target.getAttribute('data-id');
+
+        arregloCarrito = arregloCarrito.filter((curso) => {
+            return cursoId !== curso.id
+        })
+
+        carritoHTML();
+    }
 }

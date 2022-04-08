@@ -4,6 +4,8 @@ const listaCursos = document.querySelector('#lista-cursos');
 const carrito = document.querySelector('#carrito');
 const vaciarCarrito = document.querySelector('#vaciar-carrito');
 
+let arregloCarrito = [];
+
 losEventos();
 function losEventos() {
     listaCursos.addEventListener('click', agregarCarrito)
@@ -20,9 +22,12 @@ function agregarCarrito(e) {
 }
 
 function leerCursos(e) {
+
+    // selección de cursos
     const cursos = e.target.parentElement.parentElement;
     // console.log(cursos)
 
+    // identificación y selección de cada parte del curso
     const infoCursos = {
         imagen: cursos.querySelector('img').src,
         titulo: cursos.querySelector('h4').textContent,
@@ -31,5 +36,45 @@ function leerCursos(e) {
         cantidad: 1
     }
 
-    console.log(infoCursos)
+    arregloCarrito = [...arregloCarrito, infoCursos];
+
+    carritoHTML();
+
+}
+
+
+function carritoHTML() {
+
+    //Limpiar HTMl
+    limparHTML()
+
+    // ForEach que recorra y genere el arreglo html
+    arregloCarrito.forEach((producto)=> {
+        const fila = document.createElement('tr');
+
+        fila.innerHTML = `
+            <td>
+                <img src="${producto.imagen}">
+            </td>
+            <td>
+                ${producto.titulo}
+            </td>
+
+            <td>
+                ${producto.precio}
+            </td>
+
+            <td>
+                ${producto.cantidad}
+            </td>
+        `;
+
+        tbody.appendChild(fila)
+    })
+
+}
+
+
+function limparHTML() {
+    tbody.innerHTML = ''
 }

@@ -63,6 +63,8 @@ function leerCursos(e) {
             } else {
                 return curso
             }
+
+            cursos = [...cursos]
         });
 
         arregloCarrito = [...cursos]

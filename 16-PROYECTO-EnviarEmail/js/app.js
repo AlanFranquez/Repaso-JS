@@ -1,76 +1,38 @@
-// Variables
-const enviarBTN = document.querySelector('#enviar');
+const enviarBtn = document.querySelector('#enviar');
+const reset = document.querySelector('#resetBtn');
 
-// Variables de los campos
-const email = document.querySelector('#email')
-const asunto = document.querySelector('#asunto')
-const mensaje = document.querySelector('#mensaje')
+// Campos
+const email = document.querySelector('#email');
+const asunto = document.querySelector('#asunto');
+const mensaje = document.querySelector('#mensaje');
 
-const form = document.querySelector('#enviar-mail')
-
-
-// EventListeners
-EventListeners()
-
-function EventListeners() {
-    document.addEventListener('DOMContentLoaded', iniciarApp);
+eventListeners()
+function eventListeners() {
+    document.addEventListener('DOMContentLoaded', () => {
+        email.addEventListener('blur', validarForm)
 
 
-    // Validación del formulario
-    email.addEventListener('blur', validarFormEmail)
-    asunto.addEventListener('blur', validarFormAsunto)
-    mensaje.addEventListener('blur', validarFormMensaje)
+
+        // Resetear boton
+        reset.addEventListener('click', borrar)
+
+
+    })
 }
 
-function iniciarApp() {
-    enviarBTN.disabled = true
-}
 
-function validarFormEmail(e) {
+function validarForm(e) {
+    // console.log(e.target.value)
+
     if(e.target.value <= 0) {
-        email.style.borderBottomColor = 'red'
-
-        mostrarMensaje();
+        email.style.border = 'red'
     }
 }
 
-function validarFormAsunto(e) {
-    if(e.target.value <= 0) {
-            asunto.style.borderBottomColor = 'red';
+function borrar(e) {
+    e.preventDefault();
 
-            mostrarMensaje();
-        
-        
-
-        
-    }
-}
-
-function validarFormMensaje(e) {
-    if(e.target.value <= 0) {
-        mensaje.style.borderBottomColor = 'red'
-
-        mostrarMensaje();
-    }
-}
-
-
-function mostrarMensaje() {
-        const parrafo = document.createElement('p');
-
-        parrafo.textContent = 'Debes rellenar los campos'
-        parrafo.style.borderBottomColor = 'red';
-        parrafo.classList.add('border', 'border-red-500', 'background-red-100', 'text-red-500', 'p-3', 'mt-5', 'text-center', 'error')
-
-        // Se pone queryselectorAll ya que si no no funciona el .length
-        const selector = document.querySelectorAll('.error');
-
-        if(selector.length === 0) {
-            form.appendChild(parrafo)
-
-            setTimeout(() => {
-                parrafo.remove();
-            }, 3000);
-        }
-        
+    email.value= ''
+    asunto.value= ''
+    mensaje.value= ''
 }

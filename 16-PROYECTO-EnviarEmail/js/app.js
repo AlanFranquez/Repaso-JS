@@ -107,6 +107,9 @@ function mostrarMensaje(mensaje) {
     if(rep.length === 0) {
         form.appendChild(p)
 
+        setTimeout(() => {
+            p.remove()
+        }, 3000);
     }
 
     
@@ -128,17 +131,24 @@ function borrar(e) {
 
 function mensajeAgradecido(m) {
     const p = document.createElement('p');
-    p.textContent = m;
     p.classList.add('text-center', 'border', 'mt-5', 'border-green-500', 'background-color-green', 'p-3', 'text-green-500', 'aaa')
+    p.textContent = m;
 
-    const cla = document.querySelectorAll('.aaa');
-    if(cla.length === 0) {
-        form.appendChild(p)
+    const noRepeat = document.querySelectorAll('.aaa');
 
-        email.value = ''
-        asunto.value = ''
-        mensaje.value = ''
+    if(noRepeat.length === 0) {
+        form.appendChild(p);
+
+        email.value= ''
+        asunto.value= ''
+        mensaje.value= ''
+        
+        
+        setTimeout(() => {
+            p.remove()
+        }, 3000);
+        
     }
- 
 
+    
 }

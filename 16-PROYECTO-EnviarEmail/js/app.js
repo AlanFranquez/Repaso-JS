@@ -117,8 +117,20 @@ function mostrarMensaje(mensaje) {
 
 function agradecimiento(e) {
     e.preventDefault();
+
+    const spinner = document.querySelector('#spinner');
+    spinner.style.display = 'flex'
+    setTimeout(() => {
+        spinner.style.display = 'none'
+
+        
+        mensajeAgradecido('Felicidades tu email ha sido enviado');
+    }, 1000);
+
     
-    mensajeAgradecido('Felicidades tu email ha sido enviado');
+    email.classList.remove('border', 'border-green-500');
+    asunto.classList.remove('border', 'border-green-500');
+    mensaje.classList.remove('border', 'border-green-500');
 }
 
 function borrar(e) {

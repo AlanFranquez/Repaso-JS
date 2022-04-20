@@ -2,6 +2,14 @@ body {
     background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
     font-family: 'Staatliches', cursive;
 }
+
+.otra {
+    margin: 20px 0px;
+    padding: 20px 0px;
+    text-align: center;
+    color: white;
+    font-weight: 500;
+}
 html {
     font-size: 62.5%;
 }

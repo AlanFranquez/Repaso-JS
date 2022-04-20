@@ -201,7 +201,7 @@ function mostrarMensajeError() {
     limpiarHTML();
 
     const div = document.createElement('div');
-    div.classList.add('alert', 'error', 'p-5', 'mt-5', 'text-center')
+    div.classList.add('alert', 'error', 'otra')
     div.textContent = 'NO SE PUDO ENCONTRAR SU BUSQUEDA'
 
     resultado.appendChild(div)

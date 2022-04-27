@@ -6,6 +6,52 @@ function Seguro(marca, year, tipo) {
     this.tipo = tipo
 }
 
+Seguro.prototype.cotizacion = function() {
+    console.log(this.marca)
+
+    // Valor
+    /*
+        Americano: 1.15
+        Asiatico: 1.05
+        Europeo: 1.5
+
+    */
+    let cantidad;
+    const valor = 6000;
+
+    switch (this.marca) {
+        case '1':
+            cantidad = valor * 1.15
+        break;
+
+        case '2':
+            cantidad = valor * 1.05
+        break;
+
+        case '1':
+            cantidad = valor * 1.5
+        break;
+    
+        default:
+            break;
+    }
+
+    const diferencia = new Date().getFullYear() - this.year;
+
+    cantidad -= ((diferencia * 3) * cantidad) / 100;
+
+    // Si el seguro es basico se multiplica por un 30%
+    // Si el seguro es completo entonces se multiplica por un 60%
+
+    if(this.tipo === 'basico') {
+        cantidad *= 1.30
+    } else {
+        cantidad *= 1.60
+    }
+
+    return cantidad
+}
+ 
 
 function UI() {}
 
@@ -55,6 +101,10 @@ function validarForm(e) {
 
     // Mensaje que aparecerá si todos los campos están rellenos
     ui.mostrarAlertaPositiva('Enviando...')
+
+    // Instanciar la cotización
+    const seguro = new Seguro(marca.value, year.value, tipo.value);
+    seguro.cotizacion()
 }
 
 //Prototype para validar el formulario

@@ -28,8 +28,8 @@ Seguro.prototype.cotizacion = function() {
             cantidad = valor * 1.05
         break;
 
-        case '1':
-            cantidad = valor * 1.5
+        case '3':
+            cantidad = valor * 1.35
         break;
     
         default:
@@ -49,7 +49,48 @@ Seguro.prototype.cotizacion = function() {
         cantidad *= 1.60
     }
 
-    return cantidad
+    return Math.round(cantidad) // el math.round es para quitarles las comas a los numeros
+}
+
+UI.prototype.mostrarResultado = function(seguro, total) {
+    const div = document.createElement('DIV');
+    div.classList.add('mt-10')
+    const resultado = document.querySelector('#resultado')
+
+    const spinner = document.querySelector('#cargando');
+    spinner.style.display = 'flex';
+
+    switch (seguro.marca) {
+        case '1':
+            seguro.marca = 'Americano'
+            break;
+
+        case '2':
+            seguro.marca = 'Asiatico'
+        break;
+
+        case '3':
+            seguro.marca = 'Europeo'
+        break;
+    
+        default:
+            break;
+    }
+
+    div.innerHTML = `
+        <p class="header"> TU RESUMEN </p>
+        <p class="font-bold"> Marca: <span class="font-normal">${seguro.marca}</span></p>
+        <p class="font-bold"> Año: <span class="font-normal">${seguro.year}</span></p>
+        <p class="font-bold"> Tipo: <span class="font-normal">${seguro.tipo}</span></p>
+        <p class="font-bold"> Total a pagar: <span class="font-normal">$${total}</span></p>
+    `
+
+    setTimeout(() => {
+        spinner.style.display = 'none';
+
+        resultado.appendChild(div)
+    }, 2000);
+
 }
  
 
@@ -99,12 +140,20 @@ function validarForm(e) {
         return; // se pausara el codigo acá si es que no se rellenan los campos
     } 
 
+    // Seleccionar el div de resultado, servira para que el resultado no se repita
+    const resultados = document.querySelector('#resultado div');
+    if(resultados !== null) {
+        resultados.remove()
+    }
+
     // Mensaje que aparecerá si todos los campos están rellenos
     ui.mostrarAlertaPositiva('Enviando...')
 
     // Instanciar la cotización
     const seguro = new Seguro(marca.value, year.value, tipo.value);
-    seguro.cotizacion()
+    const total = seguro.cotizacion();
+
+    ui.mostrarResultado(seguro, total)
 }
 
 //Prototype para validar el formulario
@@ -129,19 +178,16 @@ UI.prototype.mostrarAlertaNegativa = function(mensaje) {
 UI.prototype.mostrarAlertaPositiva = function(mensaje) {
     const div = document.createElement('DIV');
     div.textContent = mensaje;
-    div.classList.add('correcto', 'mensaje', 'noRepetir');
+    div.classList.add('correcto', 'mensaje', 'noRepetir', 'mt-10');
     
     
     const noRepetir = document.querySelectorAll('.noRepetir');
     if(noRepetir.length === 0) {
-        const spinner = document.querySelector('#cargando');
-        spinner.style.display = 'flex';
 
         const resultado = document.querySelector('#resultado')
         form.insertBefore(div, resultado)
 
         setTimeout(() => {
-            spinner.style.display = 'none'
 
             div.remove()
         }, 2000);

@@ -30,14 +30,22 @@ class Presupuesto {
 
         this.restante = this.presupuesto - gastado;
     }
+
+    eliminarGasto(id) {
+        this.gastos = this.gastos.filter((gasto) => {
+            return gasto.id !== id;
+        })
+
+        this.calcularRestante();
+    }
 }
 
 // En UI no habrá constructor ya que solo servirá para imprimir HTML
 class UI {
     insertarPresupuesto(cantidad) {
 
-        const {presupuesto, restante} = cantidad; 
- 
+        const { presupuesto, restante } = cantidad;
+
         document.querySelector('#total').textContent = presupuesto;
         document.querySelector('#restante').textContent = restante;
 
@@ -48,7 +56,7 @@ class UI {
         divMensaje.classList.add('text-center', 'alert', 'norepetir');
         divMensaje.textContent = mensaje;
 
-        if(tipo === 'error') {
+        if (tipo === 'error') {
             divMensaje.classList.add('alert-danger');
         } else {
             divMensaje.classList.add('alert-success')
@@ -58,7 +66,7 @@ class UI {
 
         const norepetir = document.querySelectorAll('.norepetir');
 
-        if(norepetir.length === 0 ) {
+        if (norepetir.length === 0) {
             contenidoPrimario.insertBefore(divMensaje, form)
         }
 
@@ -66,16 +74,16 @@ class UI {
             divMensaje.remove()
         }, 2000);
 
-        
+
     }
 
 
-    agregarGastoListado(gastos) {
+    mostrarGastos(gastos) {
 
         limpiarHTML()
-        
+
         gastos.forEach((gasto) => {
-            const {nombre, cantidad, id} = gasto;
+            const { nombre, cantidad, id } = gasto;
 
             // Crear un LI
             const li = document.createElement('LI');
@@ -90,7 +98,10 @@ class UI {
             // Boton para borrar el gasto
             const btnBorrar = document.createElement('BTN')
             btnBorrar.classList.add('btn', 'btn-danger');
-            btnBorrar.textContent = 'Eliminar'
+            btnBorrar.textContent = 'Eliminar';
+            btnBorrar.onclick = () => {
+                eliminarGasto(id);
+            }
 
             li.appendChild(btnBorrar)
 
@@ -102,12 +113,38 @@ class UI {
     actualizarRestante(restante) {
         document.querySelector('#restante').textContent = restante;
 
-        
+    }
+
+    comprobarPresupuesto(presupuestoOBJ) {
+        const {presupuesto, restante} = presupuestoOBJ;
+
+        const divRestante = document.querySelector('.restante');
+
+        // Cambiar al 25% del presupuesto y al 50%
+        if((presupuesto / 4) > restante) {
+            divRestante.classList.add('alert-danger');
+            divRestante.classList.remove('alert-success', 'alert-warning')
+        } else if ((presupuesto / 2) > restante) {
+            divRestante.classList.add('alert-warning')
+            divRestante.classList.remove('alert-sucess')
+        } else {
+            divRestante.classList.remove('alert-danger', 'alert-warning')
+            divRestante.classList.add('alert-success')
+        }
+
+        if(restante <= 0) {
+            ui.imprimirAlerta('Presupuesto agotado', 'error')
+
+
+            form.querySelector('button').disabled = true
+        }
+
+
     }
 }
 
 // Instanciando el presupuesto
-let presupuesto; 
+let presupuesto;
 
 // Instanciando UI
 const ui = new UI();
@@ -120,7 +157,7 @@ function preguntarPresupuesto() {
     console.log(presupuestoUsuario)
 
 
-    if(presupuestoUsuario === 0 || presupuestoUsuario === null || isNaN(presupuestoUsuario) || presupuestoUsuario <= 0) {
+    if (presupuestoUsuario === 0 || presupuestoUsuario === null || isNaN(presupuestoUsuario) || presupuestoUsuario <= 0) {
         window.location.reload()
     }
 
@@ -141,7 +178,7 @@ function leerForm(e) {
     const cantidad = Number(document.querySelector('#cantidad').value);
 
 
-    if(nombre === '' || cantidad === '') {
+    if (nombre === '' || cantidad === '') {
         ui.imprimirAlerta('Por favor rellene ambos campos', 'error');
 
         return;
@@ -165,11 +202,13 @@ function leerForm(e) {
     ui.imprimirAlerta('Gasto añadido correctamente', 'exito');
 
     // Imprimir los gastos en el HTML
-    const {gastos, restante} = presupuesto
+    const { gastos, restante } = presupuesto
 
-    ui.agregarGastoListado(gastos)
+    ui.mostrarGastos(gastos)
 
     ui.actualizarRestante(restante)
+
+    ui.comprobarPresupuesto(presupuesto);
 
     // Reinicio del formulario
     form.reset()
@@ -177,4 +216,19 @@ function leerForm(e) {
 
 function limpiarHTML() {
     gastoListado.innerHTML = ''
+}
+
+function eliminarGasto(id) {
+    // Elimina los gastos del objetos
+    presupuesto.eliminarGasto(id);
+
+
+    // Elimina los gastos del HTML
+    const {gastos, restante} = presupuesto
+
+    ui.mostrarGastos(gastos)
+
+    ui.actualizarRestante(restante)
+
+    ui.comprobarPresupuesto(presupuesto);
 }

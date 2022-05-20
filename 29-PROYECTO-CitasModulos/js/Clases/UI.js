@@ -1,106 +1,127 @@
+// Funciones
+import {eliminarCita, editarCita} from '../funciones.js'
+
+import {contenedorCitas} from '../selectores.js'
+
+
+
 class UI {
-
-    constructor({citas}) {
-        this.textoHeading(citas);
-    }
-
     imprimirAlerta(mensaje, tipo) {
-        // Crea el div
-        const divMensaje = document.createElement('div');
-        divMensaje.classList.add('text-center', 'alert', 'd-block', 'col-12');
-        
-        // Si es de tipo error agrega una clase
+        const div = document.createElement('DIV');
+        div.textContent = mensaje;
+        div.classList.add('alert', 'text-center', 'norepetir', 'col-12', 'd-block')
+
         if(tipo === 'error') {
-             divMensaje.classList.add('alert-danger');
+            div.classList.add('alert-danger');
         } else {
-             divMensaje.classList.add('alert-success');
+            div.classList.add('alert-success')
         }
 
-        // Mensaje de error
-        divMensaje.textContent = mensaje;
+        const contenido = document.querySelector('#contenido');
+        const norepetir = document.querySelectorAll('.norepetir');
 
-        // Insertar en el DOM
-        document.querySelector('#contenido').insertBefore( divMensaje , document.querySelector('.agregar-cita'));
+        if(norepetir.length === 0) {
+            contenido.insertBefore(div, document.querySelector('.agregar-cita'))
 
-        // Quitar el alert despues de 3 segundos
-        setTimeout( () => {
-            divMensaje.remove();
-        }, 3000);
-   }
+            setTimeout(() => {
+                div.remove()
+            }, 2000);
+        }
 
-   imprimirCitas({citas}) { // Se puede aplicar destructuring desde la función...
-       
-        this.limpiarHTML();
+    }
 
-        this.textoHeading(citas);
+    mostrarCitas({citas}) {
+        // Destructuring en el argumento, seria como escribir const {citas} = citas; para extraer el valor
+        // console.log(citas)
 
-        citas.forEach(cita => {
-            const {mascota, propietario, telefono, fecha, hora, sintomas, id } = cita;
+        this.limpiarHTML()
 
-            const divCita = document.createElement('div');
+        citas.forEach((cita) => {
+            const {mascota, propietario, telefono, fecha, hora, sintomas, id} = cita;
+
+            
+
+            const divCita = document.createElement('DIV');
             divCita.classList.add('cita', 'p-3');
-            divCita.dataset.id = id;
+            // Agregarle un atributo
+            divCita.dataset.id = id
 
-            // scRIPTING DE LOS ELEMENTOS...
+            // Escribir codigo para mostrar los elementos
             const mascotaParrafo = document.createElement('h2');
-            mascotaParrafo.classList.add('card-title', 'font-weight-bolder');
-            mascotaParrafo.innerHTML = `${mascota}`;
+            mascotaParrafo.textContent = mascota;
+            mascotaParrafo.classList.add('font-weight-bolder', 'card-title');
 
-            const propietarioParrafo = document.createElement('p');
-            propietarioParrafo.innerHTML = `<span class="font-weight-bolder">Propietario: </span> ${propietario}`;
 
+            const propietarioParrafo = document.createElement('p')
+            propietarioParrafo.innerHTML = `
+                <span class="font-weight-bolder">Propietario:</span> ${propietario}
+            `;
+            
             const telefonoParrafo = document.createElement('p');
-            telefonoParrafo.innerHTML = `<span class="font-weight-bolder">Teléfono: </span> ${telefono}`;
+            telefonoParrafo.innerHTML = `
+                <span class="font-weight-bolder">Telefono:</span> ${telefono}
+            `;
 
-            const fechaParrafo = document.createElement('p');
-            fechaParrafo.innerHTML = `<span class="font-weight-bolder">Fecha: </span> ${fecha}`;
+            const fechaparrafo = document.createElement('p');
+            fechaparrafo.innerHTML = `
+                <span class="font-weight-bolder">Fecha:</span> ${fecha}
+            `;
 
-            const horaParrafo = document.createElement('p');
-            horaParrafo.innerHTML = `<span class="font-weight-bolder">Hora: </span> ${hora}`;
+            const horraParrafo = document.createElement('p');
+            horraParrafo.innerHTML = `
+                <span class="font-weight-bolder">Hora:</span> ${hora}
+            `;
 
             const sintomasParrafo = document.createElement('p');
-            sintomasParrafo.innerHTML = `<span class="font-weight-bolder">Síntomas: </span> ${sintomas}`;
+            sintomasParrafo.innerHTML = `
+                <span class="font-weight-bolder">Sintomas:</span> ${sintomas}
+            `;
 
-            // Agregar un botón de eliminar...
+            // Boton de eliminar con su función
             const btnEliminar = document.createElement('button');
-            btnEliminar.onclick = () => eliminarCita(id); // añade la opción de eliminar
-            btnEliminar.classList.add('btn', 'btn-danger', 'mr-2');
-            btnEliminar.innerHTML = 'Eliminar <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+            btnEliminar.classList.add('btn', 'btn-danger', 'my-2', 'mr-2');
+            btnEliminar.innerHTML = `Eliminar <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg> `;
 
-            // Añade un botón de editar...
+            // AGREGAR LA FUNCIöN PARA ELIMINAR LA CITA
+            btnEliminar.onclick = () => eliminarCita(id);
+
+            // Boton de editar con su funcion
             const btnEditar = document.createElement('button');
-            btnEditar.onclick = () => cargarEdicion(cita);
+            btnEditar.classList.add('btn', 'btn-info', 'my-2');
+            btnEditar.innerHTML = `Editar <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>`
 
-            btnEditar.classList.add('btn', 'btn-info');
-            btnEditar.innerHTML = 'Editar <svg fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>'
+            // AGREGAR LA FUNCION PARA EDITAR CITA
+            btnEditar.onclick = () => editarCita(cita)
+            
+                    
 
-            // Agregar al HTML
-            divCita.appendChild(mascotaParrafo);
-            divCita.appendChild(propietarioParrafo);
-            divCita.appendChild(telefonoParrafo);
-            divCita.appendChild(fechaParrafo);
-            divCita.appendChild(horaParrafo);
-            divCita.appendChild(sintomasParrafo);
+
+
+            // Agregar elementos html
+            divCita.appendChild(mascotaParrafo)
+            divCita.appendChild(propietarioParrafo)
+            divCita.appendChild(telefonoParrafo)
+            divCita.appendChild(fechaparrafo)
+            divCita.appendChild(horraParrafo)
+            divCita.appendChild(sintomasParrafo)
             divCita.appendChild(btnEliminar)
             divCita.appendChild(btnEditar)
 
-            contenedorCitas.appendChild(divCita);
-        });    
-   }
+            contenedorCitas.appendChild(divCita)
+            
+         })
 
-   textoHeading(citas) {
-        if(citas.length > 0 ) {
-            heading.textContent = 'Administra tus Citas '
-        } else {
-            heading.textContent = 'No hay Citas, comienza creando una'
-        }
+
     }
 
-   limpiarHTML() {
-        while(contenedorCitas.firstChild) {
-            contenedorCitas.removeChild(contenedorCitas.firstChild);
-        }
-   }
+
+    limpiarHTML() {
+        contenedorCitas.innerHTML = ''
+    }
 }
 
 export default UI;

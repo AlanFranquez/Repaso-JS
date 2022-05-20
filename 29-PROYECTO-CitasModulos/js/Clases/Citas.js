@@ -1,16 +1,24 @@
-class Citas {
+class Citas {
     constructor() {
-        this.citas = []
-    }
-    agregarCita(cita) {
-        this.citas = [...this.citas, cita];
-    }
-    editarCita(citaActualizada) {
-        this.citas = this.citas.map( cita => cita.id === citaActualizada.id ? citaActualizada : cita)
+        this.citas = [];
     }
 
+    agregarCita(cita) {
+        this.citas = [...this.citas, cita];
+
+        // console.log(this.citas)
+    }
+    
     eliminarCita(id) {
-        this.citas = this.citas.filter( cita => cita.id !== id);
+        this.citas = this.citas.filter((cita) => {
+            return cita.id !== id
+        })
+    }
+
+    editarCita(citaActualizada) {
+        this.citas = this.citas.map((cita) => {
+            return  cita.id === citaActualizada.id ? citaActualizada : cita
+        })
     }
 }
 

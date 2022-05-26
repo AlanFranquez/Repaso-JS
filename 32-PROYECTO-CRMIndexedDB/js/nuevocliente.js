@@ -1,75 +1,80 @@
+
+
 (function() {
 
-    const form = document.querySelector('#formulario');
     let DB;
+
+    // Form
+    const form = document.querySelector('#formulario')
 
     document.addEventListener('DOMContentLoaded', () => {
         
         conectarDB();
 
-        form.addEventListener('submit', validarCliente)
+        form.addEventListener('submit', validarForm);
     });
 
-    // Las bases de datos en IndexDb se conectan igual que como se llaman
-    function conectarDB() {
-        const conectando = window.indexedDB.open('crm', 1);
 
-        // En caso de que la conexión fracase
-        conectando.onerror = function() {
-            console.log('No se ha podido conectar correctamente');
-        };
-
-        // En caso de que la conexión sea exitosa
-        conectando.onsuccess = function() {
-            DB = conectando.result;
-        };
-
-    }
-    
-    function validarCliente(e) {
+    function validarForm(e) {
         e.preventDefault();
 
         const nombre = document.querySelector('#nombre').value;
         const email = document.querySelector('#email').value;
         const telefono = document.querySelector('#telefono').value;
-        const empresa = document.querySelector('#nombre').value;
+        const empresa = document.querySelector('#empresa').value;
 
-        // Validar el form
+
         if(nombre === '' || email === '' || telefono === '' || empresa === '') {
-            imprimirAlerta('Todos los campos deben estar llenos', 'error');
+            imprimirAlerta('Todos los campos deben ser llenados', 'error')
 
             return;
-        };
-    }
-
-
-    function imprimirAlerta(mensaje, tipo) {
-
-        // Otra manera de que no se repita la alerta cada vez que clickeamos
-        // Seleccionamos la clase que creamos para no repetir, y usamos un if
-        const norepetir = document.querySelector('.norepetir');
-        
-        if(!norepetir) {
-            const divMensaje = document.createElement('DIV');
-            divMensaje.textContent = mensaje;
-            divMensaje.classList.add('px-4', 'py-3', 'rounded', 'mx-auto', 'max-w-lg', 'mt-3', 'text-center', 'border', 'norepetir');
-    
-    
-            if(tipo === 'error') {
-                divMensaje.classList.add('bg-red-100', 'border-red-400', 'text-red-700');
-            } else {
-                divMensaje.classList.add('bg-green-100', 'border-green-400', 'text-green-700');
-            }
-    
-            form.appendChild(divMensaje);
-    
-            form.reset();
-    
-            setTimeout(() => {
-                divMensaje.remove();
-            }, 3000);
         }
 
-        
+        // Le asignamos los valores a un objeto
+        const cliente = {  
+            nombre: nombre,
+            email: email,
+            telefono: telefono,
+            empresa: empresa,
+            id: Date.now() // Generar id
+
+        }
+
+        // console.log(cliente)
+
+        crearNuevoCliente(cliente);
+
     }
+
+    function crearNuevoCliente(cliente) {
+        // Transaction
+        const transaction = DB.transaction(['crm'], 'readwrite');
+
+        // Hacemos un objectStore y le agregamos el cliente
+        const objectStore = transaction.objectStore('crm');
+
+        // Agregar cliente
+        objectStore.add(cliente)
+
+        transaction.onerror = function(){
+            console.log('No pudo ejecutarse el comando')
+        }
+
+
+        // oncomplete en caso de que sea exitoso
+        transaction.oncomplete = function() {
+            console.log('Validado')
+            imprimirAlerta('El cliente se agregó correctamente', 'exito');
+
+
+            // Ahora redigirgmos al usuario hacia la tabla
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
+        }
+    }
+
+
+    
 })();
+

@@ -1,8 +1,11 @@
 const form = document.querySelector('#formulario');
 const resultado = document.querySelector('#resultado');
+const paginacion = document.querySelector('#paginacion')
 
-const registroPorPagina = 20;
+const registroPorPagina = 40;
 let totalPaginas;
+let iterador;
+let paginaActual = 1;
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -24,7 +27,7 @@ function enviarDatos(e) {
     };
 
     // imprimir API
-    imprimriAPI(busqueda);
+    imprimriAPI();
 };
 
 function imprimirAlerta(mensaje, tipo) {
@@ -52,10 +55,13 @@ function imprimirAlerta(mensaje, tipo) {
     
 };
 
-function imprimriAPI(busqueda) {
+function imprimriAPI() {
+
+    const busqueda = document.querySelector('#termino').value;
+
     const key = '27793799-e8f8dd15d3eb55a8fb39f6c98';
 
-    const url = `https://pixabay.com/api/?key=${key}&q=${busqueda}&per_page=20`;
+    const url = `https://pixabay.com/api/?key=${key}&q=${busqueda}&per_page=${registroPorPagina}&page=${paginaActual}`;
 
     fetch(url).then((respuesta) => {
         // console.log(respuesta)
@@ -95,7 +101,12 @@ function mostrarResultado(imagenes) {
             </div>
         `;     
 
-    })
+    });
+
+    // para que no se stacken paginadores
+    paginacion.innerHTML = ''
+
+    imprimirPaginador()
 
 }
 
@@ -106,4 +117,44 @@ function limpiarHTML() {
 function calcularPaginas(total) {
     // Ceil es para que redonde hacia arriba y puedan crearse las paginas
     return parseInt(Math.ceil(total / registroPorPagina))
+}
+
+// CREANDO PAGINACIÓN
+// GENERAODOR QUE VA A REGISTRAR LA CANTIDAD DE ELEMENTOS DE ACUERDO A LA PAGINA
+
+function *crearPaginador(total) {
+    for (let i = 1; i <= total; i++) {
+        yield i
+    }
+}
+
+function imprimirPaginador() {
+    iterador = crearPaginador(totalPaginas);
+
+
+
+    while (true) {
+        const {value, done} = iterador.next();
+
+        if(done) {
+            
+            return;
+        }
+
+        // Caso contrario, genera un botón por cada elemento en el generaodr
+        const boton = document.createElement('a');
+        boton.href = '#';
+        boton.dataset.pagina = value;
+        boton.textContent = value;
+        boton.classList.add('siguiente', 'bg-gray-400', 'px-4', 'py-1', 'mr-2', 'font-bold', 'mb-5', 'rounded');
+
+
+        boton.onclick = () => {
+            paginaActual = value;
+
+            imprimriAPI();
+        }
+
+        paginacion.appendChild(boton)
+    }
 }

@@ -1,5 +1,6 @@
 const cripotomonedasSelec = document.querySelector('#criptomonedas');
 const form = document.querySelector('#formulario');
+const resultado = document.querySelector('#resultado')
 
 // Crear un promise
 const mostrarCriptos = criptomonedas => new Promise((resolve) => {
@@ -47,18 +48,115 @@ function optionCriptos(criptomonedas) {
 function traerDatos(e) {
     e.preventDefault();
 
+    // Validar 
     const moneda = document.querySelector('#moneda').value;
     const criptomonedasInput = document.querySelector('#criptomonedas').value;
 
     if(moneda === '' || criptomonedasInput === '') {
-        imprimirAlerta('Por favor, rellene todos los campos', 'error');
-    }
+        imprimirAlerta('Por favor, rellene todos los campos');
+    };
+
+    // LLAMAR API
+    llamarAPI(moneda, criptomonedasInput);
 }
 
 
+function llamarAPI(moneda, criptomonedasInput) {
+
+    const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptomonedasInput}&tsyms=${moneda}`;
+
+    // Acá se coloca el spinner generalmente antes de usar fetch
+    mostrarSpinner()
+
+    fetch(url).then((respuesta) => {
+
+        
+        return respuesta.json();
+    }).then((datos) => {
+       
+
+        mostrarResultados(datos.DISPLAY[criptomonedasInput][moneda])
+    })
+
+}
+
 
 function imprimirAlerta(mensaje, tipo) {
-    const divMensaje = document.createElement('DIV');
-    divMensaje.textContent = mensaje;
-    divMensaje.classList.add()
+
+    const norepetir = document.querySelector('.norepetir');
+
+    if(!norepetir) {
+        const divMensaje = document.createElement('DIV');
+        divMensaje.textContent = mensaje;
+        divMensaje.classList.add('error', 'norepetir');
+    
+        resultado.appendChild(divMensaje)
+
+        setTimeout(() => {
+            divMensaje.remove();
+        }, 2000);
+    }
+
+    
+}
+
+function mostrarResultados(resultados) {
+
+    limpiarHTML();
+
+    const {LASTUPDATE, HIGHDAY, PRICE, LOWDAY} = resultados;
+
+    const precio = document.createElement('p');
+    precio.classList.add('precio');
+    precio.innerHTML = `
+        Su precio es <span>${PRICE}</span>
+    `;
+
+    const precioMasAlto = document.createElement('p');
+    precioMasAlto.classList.add('precio')
+    precioMasAlto.innerHTML = `
+        Precio más alto del día: ${HIGHDAY}
+    `;
+
+    const precioMasBajo = document.createElement('p');
+    precioMasBajo.classList.add('precio')
+    precioMasBajo.innerHTML = `
+        Precio más bajo del día: ${LOWDAY}
+    `;
+
+    const ultimaActualizacion = document.createElement('p');
+    ultimaActualizacion.classList.add('precio');
+    ultimaActualizacion.innerHTML = `
+        Ultima Actualización: ${LASTUPDATE}
+    `;
+    
+
+
+
+
+    resultado.appendChild(precio)
+    resultado.appendChild(precioMasAlto)
+    resultado.appendChild(precioMasBajo)
+    resultado.appendChild(ultimaActualizacion)
+
+    form.reset()
+}
+
+function limpiarHTML() {
+    resultado.innerHTML = ''
+}
+
+function mostrarSpinner() {
+    limpiarHTML()
+
+    const div = document.createElement('div');
+    div.classList.add('spinner')
+    div.innerHTML = `
+        <div class="spinner">
+            <div class="cube1"></div>
+            <div class="cube2"></div>
+        </div>
+    `
+
+    resultado.appendChild(div)
 }

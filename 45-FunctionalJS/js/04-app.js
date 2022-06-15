@@ -8,3 +8,12 @@ const carrito = [
     { nombre: 'Bocinas', precio: 300},
     { nombre: 'Laptop', precio: 800},
 ];
+
+// High order function con map
+
+const soloNombres = (producto) => {
+    return producto.nombre;
+}
+
+const recorrerSoloNombres = carrito.map(soloNombres)
+console.log(recorrerSoloNombres)

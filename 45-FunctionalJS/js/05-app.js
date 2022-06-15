@@ -8,3 +8,17 @@ const carrito = [
     { nombre: 'Bocinas', precio: 300},
     { nombre: 'Laptop', precio: 800},
 ];
+
+// reducir la cantidad de codigo en las funciones
+// por ejemplo quitar los parentesis en los arrow cuando es un solo argumento
+// usar nombre de argumentos cortos
+// y aprovechar el return por implicito
+const soloNombres = p => p.nombre;
+
+const recorrerSoloNombres = carrito.map(soloNombres)
+console.log(recorrerSoloNombres)
+
+const mayoresA500 = p => p.precio > 500;
+
+const recorrerMayoresA500 = carrito.filter(mayoresA500)
+console.log(recorrerMayoresA500)

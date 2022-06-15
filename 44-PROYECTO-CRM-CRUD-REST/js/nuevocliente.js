@@ -1,10 +1,11 @@
 import { imprimirMensaje } from "./funciones.js";
 import {nuevoCliente} from "../js/API.js";
 
+
 (function() {
     const form = document.querySelector('#formulario');
 
-    console.log('hi')
+    // console.log('hi')
 
     form.addEventListener('submit', validacionCliente);
 
@@ -38,4 +39,4 @@ import {nuevoCliente} from "../js/API.js";
     }
 })();
 
-console.log('hi')
+// console.log('hi')

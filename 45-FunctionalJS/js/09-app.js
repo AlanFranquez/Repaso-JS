@@ -21,3 +21,9 @@ const numeroUno = parcial3(5);
 const numero2 = numeroUno(23);
 const numero3 = numero2(26);
 console.log(numero3)
+
+// otra forma de hacerlo
+
+const parcial4 = (a) => (b) => (c) => suma(a,b,c);
+const resultado = parcial4(10)(20)(40)
+console.log(resultado)

@@ -110,7 +110,7 @@ function mostrarAlerta(mensaje) {
 
 function consultarAPI() {
 
-    const inicio = performance.now();
+    // const inicio = performance.now();
 
     const { moneda, criptomoneda} = objBusqueda;
 
@@ -125,9 +125,10 @@ function consultarAPI() {
         });
 
 
-    const fin = performance.now();
+    
+    // const fin = performance.now();
 
-    console.log(fin - inicio)
+    // console.log(fin - inicio)
 }
 
 function mostrarCotizacionHTML(cotizacion) {
@@ -138,7 +139,8 @@ function mostrarCotizacionHTML(cotizacion) {
     const  { PRICE, HIGHDAY, LOWDAY, CHANGEPCT24HOUR, LASTUPDATE } = cotizacion;
 
 
-    debugger;
+    // Otra manera de ver las cosas en consola, cuando llega al punto se para el codigo y muestra en consola lo que habrá
+    // debugger;
 
     const precio = document.createElement('p');
     precio.classList.add('precio');
@@ -156,7 +158,7 @@ function mostrarCotizacionHTML(cotizacion) {
     const ultimaActualizacion = document.createElement('p');
     ultimaActualizacion.innerHTML = `<p>Última Actualización: <span>${LASTUPDATE}</span></p>`;
 
-    debugger;
+    // debugger;
 
     resultado.appendChild(precio);
     resultado.appendChild(precioAlto);
